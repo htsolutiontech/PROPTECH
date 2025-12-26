@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .active-tab { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900">
+
+    <div class="min-h-screen flex">
+        <div class="w-64 bg-slate-900 text-white p-6 hidden md:block shrink-0">
+            <h1 class="text-2xl font-bold text-blue-400 mb-10">KunKin <span class="text-white">AI</span></h1>
+            <nav class="space-y-4">
+                <button onclick="showSection('overview')" class="w-full text-left p-3 hover:bg-slate-800 rounded-lg flex items-center transition"><i class="fas fa-chart-line mr-3"></i> Chiến lược</button>
+                <button onclick="showSection('finance')" class="w-full text-left p-3 hover:bg-slate-800 rounded-lg flex items-center transition"><i class="fas fa-wallet mr-3"></i> Tài chính & IPO</button>
+                <button onclick="showSection('ops')" class="w-full text-left p-3 hover:bg-slate-800 rounded-lg flex items-center transition text-blue-400"><i class="fas fa-robot mr-3"></i> AI Vận hành</button>
+            </nav>
+            <div class="mt-20 p-4 bg-slate-800 rounded-xl border border-slate-700">
+                <p class="text-xs text-slate-400 uppercase font-bold mb-2">IPO Status</p>
+                <div class="w-full bg-slate-700 h-2 rounded-full">
+                    <div class="bg-yellow-400 h-2 rounded-full" style="width: 85%"></div>
+                </div>
+                <p class="text-[10px] mt-2 text-yellow-400 font-bold">85% READY FOR LISTING</p>
+            </div>
+        </div>
+
+        <div class="flex-1 p-8 overflow-y-auto">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">Trung tâm Điều hành KunKin AI</h2>
+                    <p class="text-slate-500">Mô phỏng tính năng AI Dự báo & Cá nhân hóa</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="simulateAILogic()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg transition transform hover:scale-105 italic">
+                        <i class="fas fa-sync-alt mr-2"></i> CHẠY MÔ PHỎNG AI
+                    </button>
+                </div>
+            </header>
+
+            <section id="ops-section" class="fade-in space-y-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-1">
+                        <h4 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2 italic text-purple-600">AI Guest DNA Profile</h4>
+                        <div class="space-y-3">
+                            <button onclick="updateGuestPersona('JP')" class="w-full p-3 text-left border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition flex justify-between items-center group">
+                                <span>🇯🇵 Nhật Bản (Chuyên gia)</span>
+                                <i class="fas fa-chevron-right text-slate-300 group-hover:text-blue-500"></i>
+                            </button>
+                            <button onclick="updateGuestPersona('KR')" class="w-full p-3 text-left border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition flex justify-between items-center group">
+                                <span>🇰🇷 Hàn Quốc (Chuyên gia)</span>
+                                <i class="fas fa-chevron-right text-slate-300 group-hover:text-blue-500"></i>
+                            </button>
+                            <button onclick="updateGuestPersona('US')" class="w-full p-3 text-left border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition flex justify-between items-center group">
+                                <span>🇺🇸 Âu Mỹ (Digital Nomad)</span>
+                                <i class="fas fa-chevron-right text-slate-300 group-hover:text-blue-500"></i>
+                            </button>
+                        </div>
+
+                        <div id="persona-result" class="mt-6 p-4 bg-slate-50 rounded-lg border border-dashed border-slate-300 min-h-[150px]">
+                            <p class="text-slate-400 text-sm text-center italic">Chọn quốc tịch để xem AI phân tích sở thích...</p>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-lg mb-4"><i class="fas fa-robot text-blue-500 mr-2"></i> AI Live Operations Feed</h4>
+                            <div id="ai-log" class="space-y-2 h-[150px] overflow-y-auto text-sm font-mono bg-slate-900 text-green-400 p-4 rounded-lg">
+                                <p>> System initialized. Waiting for data...</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-lg mb-4 italic text-orange-600">Tối ưu ca trực nhân sự (Staffing Predictor)</h4>
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <p class="text-xs text-slate-500 uppercase">Trạng thái hiện tại</p>
+                                    <p id="staffing-status" class="font-bold">Đang chờ lệnh từ AI...</p>
+                                </div>
+                                <canvas id="staffChart" class="max-w-[200px]" height="50"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-lg mb-6 italic text-emerald-600">Dòng tiền dự báo & Tối ưu IPO</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <canvas id="mainCashFlow" height="100"></canvas>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-emerald-50 rounded-lg border border-emerald-100 flex justify-between">
+                                <span>Tăng trưởng doanh thu nhờ AI:</span>
+                                <span class="font-bold text-emerald-600">+12.5%</span>
+                            </div>
+                            <div class="p-4 bg-blue-50 rounded-lg border border-blue-100 flex justify-between">
+                                <span>Cắt giảm chi phí vận hành:</span>
+                                <span class="font-bold text-blue-600">-15.2%</span>
+                            </div>
+                            <div class="p-4 bg-slate-900 text-white rounded-lg flex justify-between items-center">
+                                <span class="text-sm italic">Tiềm năng định giá IPO:</span>
+                                <span class="text-xl font-bold text-yellow-400">850 Tỷ VND</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // 1. Dữ liệu Persona (Khách DNA)
+        const personas = {
+            'JP': {
+                interests: "Ưu tiên: 1. An ninh | 2. Bữa sáng Nhật | 3. Giặt là nhanh",
+                action: "AI Action: Tự động gửi SMS mời dùng Menu Sashimi sáng mai lúc 7:00.",
+                upsell: "Tỷ lệ Upsell dự kiến: 25%"
+            },
+            'KR': {
+                interests: "Ưu tiên: 1. Golf Info | 2. Spa/Massage | 3. Internet tốc độ cao",
+                action: "AI Action: Gửi voucher 20% dịch vụ Spa y học vào 18:00 hàng ngày.",
+                upsell: "Tỷ lệ Upsell dự kiến: 32%"
+            },
+            'US': {
+                interests: "Ưu tiên: 1. Co-working space | 2. Tour địa phương | 3. Gym 24/7",
+                action: "AI Action: Tự động kích hoạt gói 'Digital Nomad' bao gồm in ấn & cafe free.",
+                upsell: "Tỷ lệ Upsell dự kiến: 40%"
+            }
+        };
+
+        // 2. Hàm cập nhật UI Persona
+        function updateGuestPersona(code) {
+            const data = personas[code];
+            const div = document.getElementById('persona-result');
+            div.innerHTML = `
+                <div class="fade-in">
+                    <p class="text-blue-600 font-bold mb-2">${data.interests}</p>
+                    <p class="text-slate-700 text-sm mb-2"><strong>Hành động:</strong> ${data.action}</p>
+                    <p class="text-emerald-600 text-xs font-bold uppercase">${data.upsell}</p>
+                </div>
+            `;
+            addLog(`Đang phân tích hành vi khách ${code}... Đã đề xuất phương án cá nhân hóa.`);
+        }
+
+        // 3. Hàm giả lập Log AI
+        function addLog(msg) {
+            const logDiv = document.getElementById('ai-log');
+            const p = document.createElement('p');
+            p.innerText = `> ${new Date().toLocaleTimeString()}: ${msg}`;
+            logDiv.prepend(p);
+        }
+
+        // 4. Chạy mô phỏng toàn bộ hệ thống
+        function simulateAILogic() {
+            addLog("Đang quét dữ liệu lịch bay quốc tế tại Tân Sơn Nhất...");
+            setTimeout(() => addLog("Phát hiện dòng khách chuyên gia Hàn Quốc tăng 20% vào tuần sau."), 1000);
+            setTimeout(() => {
+                addLog("Tối ưu ca trực: Đã điều chuyển 3 nhân viên từ kho sang Lễ tân.");
+                document.getElementById('staffing-status').innerText = "TỐI ƯU THÀNH CÔNG: Tăng 15% năng suất ca trực.";
+                document.getElementById('staffing-status').classList.add('text-green-600');
+            }, 2000);
+            setTimeout(() => addLog("Dòng tiền dự kiến tăng thêm 450tr VNĐ nhờ tối ưu công suất."), 3000);
+        }
+
+        // 5. Khởi tạo biểu đồ
+        const cashFlowCtx = document.getElementById('mainCashFlow').getContext('2d');
+        new Chart(cashFlowCtx, {
+            type: 'line',
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                datasets: [
+                    { label: 'Doanh thu truyền thống', data: [30, 32, 35, 38], borderColor: '#cbd5e1', fill: false },
+                    { label: 'Doanh thu AI-Optimized', data: [32.5, 35.8, 41.2, 48.7], borderColor: '#10b981', tension: 0.4, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' }
+                ]
+            }
+        });
+
+        const staffCtx = document.getElementById('staffChart').getContext('2d');
+        new Chart(staffCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Sáng', 'Chiều', 'Tối'],
+                datasets: [{ label: 'Nhân sự', data: [12, 18, 10], backgroundColor: '#f97316' }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+
+        // Hàm chuyển section (giả lập)
+        function showSection(id) {
+            addLog(`Đang chuyển hướng sang module: ${id.toUpperCase()}`);
+        }
+    </script>
+</body>
+</html>
