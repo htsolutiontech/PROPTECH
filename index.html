@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KK AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .chart-container { position: relative; height: 320px; width: 100%; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-active { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border-left: 4px solid #3b82f6; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-900">
+
+    <div class="min-h-screen flex flex-col md:flex-row">
+        
+        <aside class="w-full md:w-80 bg-[#0F172A] text-white p-6 shrink-0 md:min-h-screen flex flex-col sticky top-0 z-50">
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-3">
+                    <img src="logokk.jpg" alt="Logo" class="h-12 w-auto object-contain rounded-lg">
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight uppercase">KunKin <span class="text-blue-400">AI</span></h1>
+                        <p class="text-[8px] text-slate-500 font-bold tracking-widest">FUTURE OF HOSPITALITY</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="space-y-1 flex-1">
+                <button onclick="runGeneralSimulation()" class="w-full flex items-center justify-center p-4 bg-blue-600 rounded-2xl font-bold shadow-xl shadow-blue-900/40 mb-8 transition-all hover:bg-blue-500 active:scale-95">
+                    <i class="fas fa-bolt-lightning mr-3"></i> MÔ PHỎNG </button>
+                
+                <div class="text-slate-500 text-[10px] uppercase font-bold tracking-widest py-4 px-2">Phân tích chuyên sâu</div>
+                
+                <button onclick="navAction('overview', this)" class="nav-item w-full flex items-center p-3.5 text-slate-400 hover:bg-slate-800/50 rounded-xl transition nav-active">
+                    <i class="fas fa-layer-group mr-3"></i> Tổng quan Dashboard
+                </button>
+                
+                <button onclick="navAction('cashflow', this)" class="nav-item w-full flex items-center p-3.5 text-slate-400 hover:bg-slate-800/50 rounded-xl transition">
+                    <i class="fas fa-chart-line-up mr-3"></i> Dự báo Dòng tiền
+                </button>
+                
+                <button onclick="navAction('staffing', this)" class="nav-item w-full flex items-center p-3.5 text-slate-400 hover:bg-slate-800/50 rounded-xl transition">
+                    <i class="fas fa-user-gear mr-3"></i> Quản trị Nhân sự
+                </button>
+                
+                <button onclick="navAction('ipo', this)" class="nav-item w-full flex items-center p-3.5 text-yellow-400/80 hover:bg-slate-800/50 rounded-xl transition font-semibold">
+                    <i class="fas fa-award mr-3"></i> Lộ trình IPO
+                </button>
+            </nav>
+
+            <div class="mt-10 p-5 bg-slate-800/50 border border-slate-700/50 rounded-2xl">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] font-bold text-yellow-500 uppercase">IPO READINESS</span>
+                    <span class="text-xs font-bold text-white">85%</span>
+                </div>
+                <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-yellow-500 h-full w-[85%] shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-4 md:p-8 lg:p-10 w-full overflow-x-hidden">
+            <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 gap-6">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight" id="main-title">KunKin Daskboard Center</h2>
+                    <p class="text-slate-500 font-medium flex items-center gap-2 mt-1">
+                        <i class="fas fa-clock text-blue-500"></i> <span id="live-clock">--:--:--</span> | TP. Hồ Chí Minh
+                    </p>
+                </div>
+                <div class="bg-white px-5 py-3 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div class="flex h-3 w-3 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </div>
+                    <span class="text-xs font-bold text-slate-700 tracking-widest">AI CORE v3.3 ONLINE</span>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
+                <div class="glass-card p-6 rounded-[2rem] shadow-sm">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Doanh thu 2026</p>
+                    <h3 class="text-2xl font-bold text-slate-900">145.2 tỷ</h3>
+                    <div class="text-green-500 text-xs font-bold mt-2"><i class="fas fa-arrow-trend-up mr-1"></i> +18%</div>
+                </div>
+                <div class="glass-card p-6 rounded-[2rem] shadow-sm border-l-4 border-blue-500">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Lợi nhuận EBITDA</p>
+                    <h3 class="text-2xl font-bold text-slate-900">42.8 tỷ</h3>
+                    <div class="text-blue-500 text-xs font-bold mt-2 italic">Tối ưu bởi AI</div>
+                </div>
+                <div class="glass-card p-6 rounded-[2rem] shadow-sm">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">NPS Score</p>
+                    <h3 class="text-2xl font-bold text-slate-900">9.2/10</h3>
+                    <div class="text-yellow-500 text-xs font-bold mt-2">Dịch vụ chuẩn 5★</div>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-[2rem] shadow-xl shadow-blue-900/20">
+                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-1">Định giá Pre-IPO</p>
+                    <h3 class="text-2xl font-bold text-white tracking-tight">850 Tỷ VND</h3>
+                    <div class="mt-2 text-white/40 text-[9px] italic">Sẵn sàng niêm yết 2026</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                <div class="glass-card p-8 rounded-[2.5rem]">
+                    <h4 class="font-bold text-slate-900 text-lg mb-6 flex items-center justify-between">
+                        <span><i class="fas fa-chart-area mr-2 text-blue-500"></i> Dòng tiền & Lợi nhuận</span>
+                        <span class="text-[10px] text-slate-400 font-normal">Đơn vị: Tỷ VND</span>
+                    </h4>
+                    <div class="chart-container"><canvas id="cashFlowChart"></canvas></div>
+                </div>
+                <div class="glass-card p-8 rounded-[2.5rem]">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-bold text-slate-900 text-lg"><i class="fas fa-fingerprint mr-2 text-purple-500"></i> Phân tích Guest DNA</h4>
+                        <select onchange="updateGuestPersona(this.value)" class="bg-slate-100 border-none text-xs font-bold px-3 py-2 rounded-xl text-blue-600 outline-none cursor-pointer">
+                            <option value="JP">🇯🇵 Nhật Bản</option>
+                            <option value="KR">🇰🇷 Hàn Quốc</option>
+                            <option value="US">🇺🇸 Âu Mỹ</option>
+                        </select>
+                    </div>
+                    <div class="chart-container"><canvas id="guestDnaChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl shadow-slate-900/20">
+                    <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-6 flex items-center gap-2">
+                        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div> AI System Feed
+                    </h5>
+                    <div id="ai-log" class="h-60 overflow-y-auto space-y-3 font-mono text-[10px] text-green-400/80 scrollbar-hide p-4 bg-black/30 rounded-2xl border border-white/5">
+                        <p class="opacity-50">> System initialized...</p>
+                        <p class="text-blue-400">> AI Core Ready for commands.</p>
+                    </div>
+                </div>
+
+                <div id="ai-insight-panel" class="lg:col-span-2 glass-card p-8 md:p-10 rounded-[2.5rem] flex items-center gap-10 border-2 border-blue-50 relative overflow-hidden group">
+                    <div class="flex-1 relative z-10">
+                        <span class="inline-block px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase mb-4 tracking-widest">AI Recommendation</span>
+                        <h4 id="insight-title" class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-3 leading-tight">Sẵn sàng phân tích...</h4>
+                        <p id="insight-desc" class="text-slate-500 leading-relaxed max-w-xl italic">Vui lòng chọn một tính năng bên menu trái hoặc nhấn 'Chạy mô phỏng'.</p>
+                        <div id="insight-stats" class="mt-6 flex gap-6 opacity-0 transition-opacity">
+                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Doanh thu tăng</p><p class="text-xl font-bold text-green-500">+12.5%</p></div>
+                            <div><p class="text-[10px] font-bold text-slate-400 uppercase">Cost Saving</p><p class="text-xl font-bold text-blue-500">-15.0%</p></div>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex w-40 h-40 bg-slate-50 rounded-[3rem] items-center justify-center text-slate-200">
+                        <i id="insight-icon" class="fas fa-brain-circuit text-7xl opacity-20"></i>
+                    </div>
+                    <i class="fas fa-brain absolute right-[-5%] bottom-[-5%] text-[280px] text-blue-600/5"></i>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- UI UTILS ---
+        function updateClock() {
+            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('vi-VN');
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        function addLog(msg, color = 'green') {
+            const log = document.getElementById('ai-log');
+            const p = document.createElement('p');
+            const colors = { green: 'text-green-400', blue: 'text-blue-400', yellow: 'text-yellow-400', red: 'text-red-400' };
+            p.innerHTML = `<span class="opacity-30 mr-2">${new Date().toLocaleTimeString([], {hour12:false})}</span> <span class="${colors[color]}">${msg}</span>`;
+            log.prepend(p);
+        }
+
+        // --- CHARTS ---
+        const cashFlowChart = new Chart(document.getElementById('cashFlowChart'), {
+            type: 'line',
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                datasets: [
+                    { label: 'Dòng tiền AI', data: [35, 42, 58, 75], borderColor: '#3b82f6', borderWidth: 4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)', tension: 0.4 },
+                    { label: 'Mô hình cũ', data: [35, 37, 39, 41], borderColor: '#cbd5e1', borderDash: [5, 5], fill: false }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+
+        const guestDnaChart = new Chart(document.getElementById('guestDnaChart'), {
+            type: 'bar',
+            data: {
+                labels: ['F&B', 'Wellness', 'Business', 'Leisure'],
+                datasets: [{ data: [80, 50, 40, 60], backgroundColor: ['#3b82f6', '#f43f5e', '#f59e0b', '#10b981'], borderRadius: 12 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+
+        // --- NAVIGATION & ACTIONS ---
+        function navAction(type, el) {
+            // Update Active UI
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('nav-active'));
+            el.classList.add('nav-active');
+
+            const title = document.getElementById('main-title');
+            const insightTitle = document.getElementById('insight-title');
+            const insightDesc = document.getElementById('insight-desc');
+            const stats = document.getElementById('insight-stats');
+
+            if (type === 'cashflow') {
+                title.innerText = "Phân tích Dự báo Dòng tiền";
+                insightTitle.innerText = "Tối ưu hóa Tài chính (Cash Flow)";
+                insightDesc.innerText = "AI đang quét dữ liệu chi phí và doanh thu. Phát hiện khả năng tăng biên lợi nhuận ròng thông qua việc tự động điều chỉnh giá phòng theo thời gian thực.";
+                addLog("Bắt đầu phân tích Dòng tiền...", "blue");
+                setTimeout(() => {
+                    addLog("Phát hiện thặng dư dự kiến: +4.2 tỷ VND nhờ tối ưu OPEX.", "green");
+                    cashFlowChart.data.datasets[0].data = [35, 48, 62, 85];
+                    cashFlowChart.update();
+                }, 1000);
+            } 
+            else if (type === 'staffing') {
+                title.innerText = "Hệ thống Quản trị Nhân sự AI";
+                insightTitle.innerText = "Tối ưu ca trực & Hiệu suất";
+                insightDesc.innerText = "Hệ thống phát hiện dòng khách chuyên gia tăng đột biến vào tuần sau. Đã tự động lập lịch trực cho 15 nhân sự lễ tân tại các cơ sở 219 NTT, 46/24 NCV";
+                addLog("Quét tải trọng nhân sự toàn hệ thống...", "yellow");
+                setTimeout(() => addLog("CẢNH BÁO: Thiếu nhân sự tại cơ sở Q7 vào 20:00 tối mai. Đã điều phối xong.", "red"), 1000);
+            }
+            else if (type === 'ipo') {
+                title.innerText = "Lộ trình IPO & Định giá Doanh nghiệp";
+                insightTitle.innerText = "Mục tiêu niêm yết 2026";
+                insightDesc.innerText = "Các chỉ số EBITDA đang vượt mục tiêu 12%. Hệ thống định giá đạt 850 tỷ VND dựa trên tài sản dữ liệu (Data Assets) và dòng tiền bền vững.";
+                addLog("Đang trích xuất báo cáo định giá Pre-IPO...", "blue");
+            }
+            else {
+                title.innerText = "Hệ thống Điều hành Tổng thể";
+                insightTitle.innerText = "Trạng thái Hệ thống: Bình thường";
+                insightDesc.innerText = "Vui lòng chọn tính năng để xem chi tiết.";
+            }
+            stats.style.opacity = "1";
+        }
+
+        async function runGeneralSimulation() {
+            addLog("Bắt đầu chu trình mô phỏng tổng thể...", "blue");
+            await new Promise(r => setTimeout(r, 800));
+            addLog("Quét dữ liệu chuyến bay quốc tế TSN... Hoàn tất.", "green");
+            await new Promise(r => setTimeout(r, 800));
+            addLog("Phát hiện 150 chuyên gia Hàn Quốc nhập cảnh tuần tới.", "yellow");
+            updateGuestPersona('KR');
+            addLog("TỰ ĐỘNG: Đã điều chỉnh Menu và lịch trực Spa.", "green");
+        }
+
+        function updateGuestPersona(code) {
+            const data = {
+                'JP': { title: "Dịch vụ Omotenashi chuẩn Nhật", data: [95, 30, 45, 20], desc: "Tập trung vào An ninh và Bữa sáng chất lượng cao." },
+                'KR': { title: "Kinh doanh & Giải trí Hàn Quốc", data: [75, 90, 35, 55], desc: "Ưu tiên dịch vụ Spa hồi phục và liên kết sân Golf." },
+                'US': { title: "Digital Nomad & Local Style", data: [45, 40, 95, 85], desc: "Ưu tiên tốc độ Internet và không gian Co-working." }
+            };
+            const p = data[code];
+            document.getElementById('insight-title').innerText = p.title;
+            document.getElementById('insight-desc').innerText = p.desc;
+            guestDnaChart.data.datasets[0].data = p.data;
+            guestDnaChart.update();
+            addLog(`Đang áp dụng Guest DNA: ${code}`, "blue");
+        }
+    </script>
+</body>
+</html>
